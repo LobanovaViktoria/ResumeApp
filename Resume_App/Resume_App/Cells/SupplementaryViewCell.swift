@@ -15,7 +15,6 @@ class SupplementaryViewCell: UICollectionReusableView {
     
     lazy var editButton: UIButton = {
         let button = UIButton()
-        button.setImage(UIImage(named: "pencil"), for: .normal)
         button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -42,6 +41,18 @@ class SupplementaryViewCell: UICollectionReusableView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func configure(
+        header: String?,
+        buttonImage: UIImage?
+    ) {
+        titleLabel.text = header
+        editButton.isHidden = buttonImage == nil
+        let image = buttonImage?
+            .withTintColor(.textColorBlack)
+            .withRenderingMode(.alwaysOriginal)
+        editButton.setImage(image, for: .normal)
     }
     
     @objc private func editButtonTapped() {

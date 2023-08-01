@@ -1,11 +1,10 @@
 import UIKit
 
 final class InfoCollectionCell: UICollectionViewCell {
-
+    
     static let identifier = "InfoCollectionCell"
-    private let dataManager = DataManager.shared
-   
-    private lazy var titleResume: UILabel = {
+    
+    private lazy var titleResumeLabel: UILabel = {
         let label = UILabel()
         label.text = "title".localized
         label.textColor = .textColorBlack
@@ -13,10 +12,9 @@ final class InfoCollectionCell: UICollectionViewCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-
+    
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = dataManager.avatar
         imageView.layer.cornerRadius = 60
         imageView.clipsToBounds = true
         imageView.contentMode = .scaleAspectFill
@@ -24,9 +22,8 @@ final class InfoCollectionCell: UICollectionViewCell {
         return imageView
     }()
     
-    private lazy var userName: UILabel = {
+    private lazy var userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = dataManager.userName
         label.textColor = .textColorBlack
         label.font = .headline2
         label.numberOfLines = 2
@@ -37,7 +34,6 @@ final class InfoCollectionCell: UICollectionViewCell {
     
     private lazy var levelLabel: UILabel = {
         let label = UILabel()
-        label.text = dataManager.level
         label.textColor = .textColorGray
         label.font = .headline3
         label.textAlignment = .center
@@ -45,9 +41,8 @@ final class InfoCollectionCell: UICollectionViewCell {
         return label
     }()
     
-    private lazy var location: UILabel = {
+    private lazy var locationLabel: UILabel = {
         let label = UILabel()
-        label.text = dataManager.location
         label.textColor = .textColorGray
         label.font = .headline3
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -60,40 +55,40 @@ final class InfoCollectionCell: UICollectionViewCell {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         addSubviews()
         setupLayout()
         configureStackView()
     }
-
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
     private func addSubviews() {
-        contentView.addSubview(titleResume)
+        contentView.addSubview(titleResumeLabel)
         contentView.addSubview(imageView)
-        contentView.addSubview(userName)
+        contentView.addSubview(userNameLabel)
         contentView.addSubview(levelLabel)
         contentView.addSubview(locationStackView)
     }
     
     private func setupLayout() {
         NSLayoutConstraint.activate([
-            titleResume.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
-            titleResume.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            titleResumeLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
+            titleResumeLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             
-            imageView.topAnchor.constraint(equalTo: titleResume.bottomAnchor, constant: 42),
+            imageView.topAnchor.constraint(equalTo: titleResumeLabel.bottomAnchor, constant: 42),
             imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.widthAnchor.constraint(equalToConstant: 120),
             imageView.heightAnchor.constraint(equalToConstant: 120),
             
-            userName.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
-            userName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            userName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            userName.bottomAnchor.constraint(equalTo: levelLabel.topAnchor, constant: -4),
+            userNameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
+            userNameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            userNameLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            userNameLabel.bottomAnchor.constraint(equalTo: levelLabel.topAnchor, constant: -4),
             
             levelLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             levelLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
@@ -109,8 +104,19 @@ final class InfoCollectionCell: UICollectionViewCell {
     private func configureStackView() {
         let locationImageView = UIImageView(image: UIImage(named: "frame"))
         locationStackView.addArrangedSubview(locationImageView)
-        locationStackView.addArrangedSubview(location)
-        
+        locationStackView.addArrangedSubview(locationLabel)
+    }
+    
+    func configure(
+        city: String?,
+        level: String?,
+        avatar: UIImage?,
+        name: String?
+    ) {
+        locationLabel.text = city
+        levelLabel.text = level
+        imageView.image = avatar
+        userNameLabel.text = name
     }
 }
 

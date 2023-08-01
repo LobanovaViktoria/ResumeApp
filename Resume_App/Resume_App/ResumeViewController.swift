@@ -2,32 +2,36 @@ import UIKit
 
 final class ResumeViewController: UIViewController {
     
+    private let dataManager = DataManager.shared
+    private var isInEditableMode: Bool = false
+    private var skills: [String] = []
+    
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.register(InfoCollectionCell.self,
-                                forCellWithReuseIdentifier: InfoCollectionCell.identifier)
-        collectionView.register(SKillsCollectionCell.self,
-                                forCellWithReuseIdentifier: SKillsCollectionCell.identifier)
+        collectionView.register(
+            InfoCollectionCell.self,
+            forCellWithReuseIdentifier: InfoCollectionCell.identifier)
+        collectionView.register(
+            SKillsCollectionCell.self,
+            forCellWithReuseIdentifier: SKillsCollectionCell.identifier)
         collectionView.register(
             SupplementaryViewCell.self,
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: SupplementaryViewCell.identifier)
-        collectionView.register(AboutMeCollectionCell.self,
-                                forCellWithReuseIdentifier: AboutMeCollectionCell.identifier)
+        collectionView.register(
+            AboutMeCollectionCell.self,
+            forCellWithReuseIdentifier: AboutMeCollectionCell.identifier)
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         return collectionView
     }()
     
-    private var isInEditableMode: Bool = false
-    private var skills: [String] = []
-    
-    //MARK: - ViewController lifecycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .backgroundWhite
+        skills = dataManager.skills
         addSubviews()
         setupLayout()
         collectionView.delegate = self
@@ -49,30 +53,44 @@ final class ResumeViewController: UIViewController {
     }
     
     func showAlert() {
-        let alert = UIAlertController(title: "alertTitle".localized, message: "alertMessage".localized, preferredStyle:UIAlertController.Style.alert)
+        let alert = UIAlertController(
+            title: "alertTitle".localized,
+            message: "alertMessage".localized,
+            preferredStyle:UIAlertController.Style.alert)
+        
         alert.addTextField { (textField : UITextField!) in
             textField.placeholder = "alertPlaceholder".localized
             textField.delegate = self
         }
-        
-        let save = UIAlertAction(title: "alertSave".localized, style: UIAlertAction.Style.default, handler: { [weak self] saveAction -> Void in
-            let textField = alert.textFields![0] as UITextField
-            if let skill = textField.text {
-                self?.skills.append(skill)
-                self?.collectionView.reloadData()
-            }
-            
-            // Save to user defaults
-        })
-        let cancel = UIAlertAction(title: "alertCancel".localized, style: UIAlertAction.Style.default, handler: {
-            (action : UIAlertAction!) -> Void in })
+        let save = UIAlertAction(
+            title: "alertSave".localized,
+            style: UIAlertAction.Style.default,
+            handler: { [weak self] saveAction -> Void in
+                let textField = alert.textFields![0] as UITextField
+                if let skill = textField.text {
+                    self?.skills.append(skill)
+                    self?.dataManager.save(skill: skill)
+                    self?.collectionView.reloadData()
+                }
+            })
+        let cancel = UIAlertAction(
+            title: "alertCancel".localized,
+            style: UIAlertAction.Style.default,
+            handler: {
+                (action : UIAlertAction!) -> Void in })
         alert.addAction(cancel)
         alert.addAction(save)
         self.present(alert, animated: true, completion: nil)
-    }    
+    }
+    
+    func remove(skill: String?) {
+        dataManager.remove(skill: skill)
+        skills = dataManager.skills
+        collectionView.reloadData()
+    }
 }
 
-extension ResumeViewController :UITextFieldDelegate {
+extension ResumeViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -91,6 +109,11 @@ extension ResumeViewController: UICollectionViewDataSource {
                 withReuseIdentifier: InfoCollectionCell.identifier,
                 for: indexPath) as? InfoCollectionCell else { return UICollectionViewCell() }
             infoCell.backgroundColor = .backgroundGray
+            infoCell.configure(
+                city: dataManager.location,
+                level: dataManager.level,
+                avatar: dataManager.avatar,
+                name: dataManager.userName)
             return infoCell
         case .skills:
             guard let skillsCell = collectionView.dequeueReusableCell(
@@ -112,15 +135,30 @@ extension ResumeViewController: UICollectionViewDataSource {
                 }
             }()
             
+            let skill: String? = indexPath.row < skills.count ? skills[indexPath.row] : nil
+            
+            let action: (() -> Void)? = { [weak self] in
+                guard let self else { return }
+                switch type {
+                case .common:
+                    return
+                case .add:
+                    return self.showAlert()
+                case .edit:
+                    return self.remove(skill: skill)
+                }
+            }
+            
             skillsCell.configure(
-                with: indexPath.row < skills.count ? skills[indexPath.row] : nil,
-                action: showAlert,
+                with: skill,
+                action: action,
                 type: type)
             return skillsCell
         case .aboutMe:
             guard let aboutMeCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: AboutMeCollectionCell.identifier,
                 for: indexPath) as? AboutMeCollectionCell else { return UICollectionViewCell() }
+            aboutMeCell.configure(with: dataManager.aboutMe)
             return aboutMeCell
         }
     }
@@ -143,7 +181,6 @@ extension ResumeViewController: UICollectionViewDataSource {
 }
 
 extension ResumeViewController: UICollectionViewDelegateFlowLayout {
-    
     func collectionView(
         _ collectionView: UICollectionView,
         layout collectionViewLayout: UICollectionViewLayout,
@@ -178,11 +215,19 @@ extension ResumeViewController: UICollectionViewDelegateFlowLayout {
             
             skillsCell.configure(
                 with: indexPath.row < skills.count ? skills[indexPath.row] : nil,
-                action: showAlert,
+                action: nil,
                 type: type)
-            return skillsCell.sizeThatFits(CGSize(width: self.collectionView.bounds.width - 32, height: skillsCell.cellHeight))
+            let size = skillsCell.sizeThatFits(CGSize(width: self.collectionView.bounds.width - 32, height: skillsCell.cellHeight))
+            return CGSize(width: min(size.width, self.collectionView.bounds.width - 32), height: skillsCell.cellHeight)
         case .aboutMe:
-            return CGSize(width: self.collectionView.bounds.width, height: 100)
+            guard let aboutMeCell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: AboutMeCollectionCell.identifier,
+                for: indexPath) as? AboutMeCollectionCell else
+            {
+                return .zero
+            }
+            aboutMeCell.configure(with: dataManager.aboutMe)
+            return aboutMeCell.sizeThatFits(CGSize(width: self.collectionView.bounds.width, height: .infinity))
         }
     }
     
@@ -217,10 +262,17 @@ extension ResumeViewController: UICollectionViewDelegateFlowLayout {
             id = ""
         }
         
-        guard let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryViewCell else { return UICollectionReusableView() }
+        guard let view = collectionView.dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: id,
+            for: indexPath
+        ) as? SupplementaryViewCell else { return UICollectionReusableView() }
         
         if indexPath.section == 1 {
-            view.titleLabel.text = "headerSkills".localized
+            let image = isInEditableMode ? UIImage(named: "checkmark") : UIImage(named: "pencil")
+            view.configure(
+                header: "headerSkills".localized,
+                buttonImage: image)
             view.editButton.isHidden = false
             view.buttonAction = { [weak self] in
                 guard let self else { return }
@@ -229,8 +281,9 @@ extension ResumeViewController: UICollectionViewDelegateFlowLayout {
             }
         }
         if indexPath.section == 2 {
-            view.titleLabel.text = "headerAboutMe".localized
-            view.editButton.isHidden = true
+            view.configure(
+                header: "headerAboutMe".localized,
+                buttonImage: nil)
         }
         return view
     }
