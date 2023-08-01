@@ -1,0 +1,9 @@
+"title" = "Profile";
+"headerSkills" = "My sckills";
+"headerAboutMe" = "About me";
+"alertTitle" = "Adding a skill";
+"alertMessage" = "Enter the name of the skill you own";
+"alertCancel" = "Cancel";
+"alertSave" = "Add";
+"alertPlaceholder" = "Enter a name";
+
