@@ -27,7 +27,7 @@ class DataManager {
     }
     
     var aboutMe: String {
-        "Intern, no work experience. Completed an online courses of iOS developer program at Yandex Practicum platform in 2023 Intern, no work experience. Completed an online courses of iOS developer program at Yandex Practicum platform in 2023 Intern, no work experience. Completed an online courses of iOS developer program at Yandex Practicum platform in 2023 Intern, no work experience. Completed an online courses of iOS developer program at Yandex Practicum platform in 2023"
+        "Intern, no work experience. Completed an online courses of iOS developer program at Yandex Practicum platform in 2023"
     }
     
     func save(skill: String) {
