@@ -3,8 +3,9 @@ import UIKit
 class SupplementaryViewCell: UICollectionReusableView {
     
     static let identifier = "header"
+    var buttonAction: (() -> Void)?
     
-    var titleLabel: UILabel = {
+    lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.textColor = .textColorBlack
         label.font = .header
@@ -12,7 +13,7 @@ class SupplementaryViewCell: UICollectionReusableView {
         return label
     }()
     
-    var editButton: UIButton = {
+    lazy var editButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(named: "pencil"), for: .normal)
         button.addTarget(self, action: #selector(editButtonTapped), for: .touchUpInside)
@@ -44,6 +45,6 @@ class SupplementaryViewCell: UICollectionReusableView {
     }
     
     @objc private func editButtonTapped() {
-        
+        buttonAction?()
     }
 }

@@ -10,8 +10,8 @@ final class AboutMeCollectionCell: UICollectionViewCell {
         label.text = dataManager.aboutMe
         label.textColor = .textColorBlack
         label.font = .textFont
-        label.numberOfLines = 2
         label.textAlignment = .left
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

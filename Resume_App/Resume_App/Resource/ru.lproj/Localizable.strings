@@ -1,3 +1,8 @@
 "title" = "Профиль";
 "headerSkills" = "Мои навыки";
 "headerAboutMe" = "О себе";
+"alertTitle" = "Добавление навыка";
+"alertMessage" = "Введите название навыка, которым вы владеете";
+"alertCancel" = "Отмена";
+"alertSave" = "Добавить";
+"alertPlaceholder" = "Введите название";
