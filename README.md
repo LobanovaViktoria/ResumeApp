@@ -4,6 +4,11 @@ Resume app for Surf IOS school
 # Ссылки
 
 [Дизайн](https://www.figma.com/file/xfRZ6MHiLNO9BSUN9uVhnN/iOS-%D0%97%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D1%8F?type=design&node-id=0-1&mode=design&t=baN0ybNeb4z1AJ1j-0)
+[Посмотреть скринкаст](https://disk.yandex.ru/i/NF4WQ5qGcY2FsA)
+
+![Иллюстрации к проекту] (https://github.com/LobanovaViktoria/ResumeApp/blob/main/1%20resume.png)     
+(https://github.com/LobanovaViktoria/ResumeApp/blob/main/2%20resume.png)    
+(https://github.com/LobanovaViktoria/ResumeApp/blob/main/3%20resume.png)
 
 # Задание летней школы
 
