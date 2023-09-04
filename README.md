@@ -7,8 +7,8 @@ Resume app for Surf IOS school
 [Посмотреть скринкаст](https://disk.yandex.ru/i/NF4WQ5qGcY2FsA)
 
 ![Иллюстрации к проекту] (https://github.com/LobanovaViktoria/ResumeApp/blob/main/1%20resume.png)     
-(https://github.com/LobanovaViktoria/ResumeApp/blob/main/2%20resume.png)    
-(https://github.com/LobanovaViktoria/ResumeApp/blob/main/3%20resume.png)
+![Иллюстрации к проекту](https://github.com/LobanovaViktoria/ResumeApp/blob/main/2%20resume.png)    
+![Иллюстрации к проекту](https://github.com/LobanovaViktoria/ResumeApp/blob/main/3%20resume.png)
 
 # Задание летней школы
 
